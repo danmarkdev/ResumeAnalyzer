@@ -811,8 +811,16 @@ el("submit-btn").addEventListener("click", async () => {
   setTimeout(() => toast.classList.add("hidden"), 5000);
 });
 
+function initPaymentDisplay() {
+  const info = QR[selectedPayment];
+  el("pay-qr").src = info.img;
+  el("pay-label").textContent = info.label;
+  el("pay-number").textContent = info.number;
+}
+
 updateTotal();
 updateSubmitState();
+initPaymentDisplay();
 </script>
 
 </body>
