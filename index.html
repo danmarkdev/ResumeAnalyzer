@@ -4,6 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>PrintPortal</title>
+
+   <!--CSS--> <!--Cascade Style Sheet-->
 <style>
 :root{
   --emerald-300:#6ee7b7; --emerald-400:#34d399; --emerald-500:#10b981;
@@ -68,6 +70,8 @@ textarea{resize:vertical;}
 .rate-card .title{font-size:0.7rem;color:var(--zinc-500);margin-bottom:0.4rem;font-weight:600;}
 .rate-row{display:flex;justify-content:space-between;padding:0.15rem 0;}
 </style>
+
+   <!--HTML--> <!--HyperTextMarkUpLanguage-->
 </head>
 <body>
 
@@ -101,8 +105,8 @@ textarea{resize:vertical;}
         <div>
           <div class="field-label">Print type</div>
           <select id="f-printtype">
-            <option value="bw" data-price="3">Black and white — PHP 3.00/pg</option>
-            <option value="color" data-price="15">Color — PHP 15.00/pg</option>
+            <option value="bw" data-price="3">Black and white - PHP 3.00/pg</option>
+            <option value="color" data-price="15">Color - PHP 15.00/pg</option>
           </select>
         </div>
       </div>
@@ -111,7 +115,7 @@ textarea{resize:vertical;}
         <div class="field-label">PDF file</div>
         <div id="dropzone" class="dropzone">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
-          <span id="dropzone-text">Choose PDF file or drag here — A4 PDF only</span>
+          <span id="dropzone-text">Choose PDF file or drag here - PDF only</span>
           <input id="f-file" type="file" accept="application/pdf" class="hidden" />
         </div>
       </div>
@@ -146,7 +150,7 @@ textarea{resize:vertical;}
       </div>
 
       <div class="footer-row">
-        <span class="footer-note">This sends your order details straight to our phone — nothing is stored online.</span>
+        <span class="footer-note">This sends your order details straight to our phone - nothing is stored online.</span>
         <div class="actions">
           <button id="copy-order" class="copy-btn" disabled>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -154,12 +158,12 @@ textarea{resize:vertical;}
           </button>
           <button id="submit-btn" class="btn-primary" disabled>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-            Send order to us
+            Submit
           </button>
         </div>
       </div>
 
-      <div id="toast" class="toast hidden">Opening your messaging app with your order filled in — just hit send.</div>
+      <div id="toast" class="toast hidden">Opening your messaging app with your order filled in - just hit send.</div>
     </div>
 
     <div class="sidebar">
@@ -178,6 +182,7 @@ textarea{resize:vertical;}
   </div>
 </main>
 
+   <!--JS--> <!--JavaScript-->
 <script>
 const SHOP_PHONE = "09694891753";
 const QR = {
