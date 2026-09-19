@@ -38,7 +38,11 @@ async function callGemini(apiKey, userContent) {
       contents: [{ parts: [{ text: userContent }] }],
       generationConfig: {
         responseMimeType: 'application/json',
-        maxOutputTokens: 1500,
+        // Thinking tokens share this budget with the visible answer, so keep it generous.
+        maxOutputTokens: 8192,
+        // Resume feedback doesn't need deep reasoning. If the API rejects this field
+        // with a 400 error, replace it with: thinkingConfig: { thinkingBudget: 0 }
+        thinkingConfig: { thinkingLevel: 'minimal' },
       },
     }),
   });
@@ -53,6 +57,17 @@ async function callGemini(apiKey, userContent) {
   return response.json();
 }
 
+// Strips markdown fences and anything outside the outermost { ... } before parsing.
+function safeParse(text) {
+  const cleaned = text.replace(/```json|```/g, '').trim();
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start === -1 || end === -1) {
+    throw new Error('No JSON found in AI response');
+  }
+  return JSON.parse(cleaned.slice(start, end + 1));
+}
+
 async function getAIFeedback(resumeText, jobDescription) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -65,22 +80,41 @@ async function getAIFeedback(resumeText, jobDescription) {
 
   let lastError;
 
-  // Free-tier Gemini models occasionally return 503 "overloaded" under demand spikes.
-  // These are transient, so retry a few times with backoff before giving up.
+  // Retry on transient failures: 503 "overloaded", 429 rate limits, and
+  // malformed/truncated JSON from the model (asking again usually fixes it).
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
       const data = await callGemini(apiKey, userContent);
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      const candidate = data.candidates?.[0];
+      const text = candidate?.content?.parts?.map((p) => p.text || '').join('');
+
+      // Check these logs in Render if errors ever come back.
+      // finishReason "MAX_TOKENS" means the reply was cut off.
+      console.log(
+        `Gemini finishReason: ${candidate?.finishReason} | usage: ${JSON.stringify(data.usageMetadata)}`
+      );
 
       if (!text) {
-        throw new Error('No text response from Gemini API');
+        const emptyErr = new Error(
+          `No text response from Gemini API (finishReason: ${candidate?.finishReason})`
+        );
+        emptyErr.retryable = true;
+        throw emptyErr;
       }
 
-      return JSON.parse(text);
+      try {
+        return safeParse(text);
+      } catch (parseErr) {
+        const badJsonErr = new Error(
+          `AI returned malformed JSON (finishReason: ${candidate?.finishReason}): ${parseErr.message}`
+        );
+        badJsonErr.retryable = true;
+        throw badJsonErr;
+      }
     } catch (err) {
       lastError = err;
 
-      const isRetryable = err.status === 503 || err.status === 429;
+      const isRetryable = err.retryable || err.status === 503 || err.status === 429;
       const isLastAttempt = attempt === MAX_RETRIES;
 
       if (!isRetryable || isLastAttempt) {
@@ -88,7 +122,7 @@ async function getAIFeedback(resumeText, jobDescription) {
       }
 
       const backoffMs = attempt * 1500; // 1.5s, 3s, 4.5s
-      console.log(`Gemini returned ${err.status}, retrying in ${backoffMs}ms (attempt ${attempt}/${MAX_RETRIES})...`);
+      console.log(`Attempt ${attempt}/${MAX_RETRIES} failed (${err.message}). Retrying in ${backoffMs}ms...`);
       await sleep(backoffMs);
     }
   }
