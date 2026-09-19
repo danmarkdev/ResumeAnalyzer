@@ -23,7 +23,7 @@ Guidelines:
 
 // Google AI Studio's free tier for this model: no credit card required.
 // See https://ai.google.dev/gemini-api/docs/rate-limits for current limits.
-const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_MODEL = 'gemini-2.0-flash';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 async function getAIFeedback(resumeText, jobDescription) {
