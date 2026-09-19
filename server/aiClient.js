@@ -1,7 +1,5 @@
 const SYSTEM_PROMPT = `You are a resume/CV reviewer used inside an automated tool.
-You must respond with ONLY a single valid JSON object — no markdown fences, no preamble, no explanation text outside the JSON.
-
-The JSON must match this exact shape:
+Respond with a single JSON object matching this exact shape:
 {
   "overall_score": <integer 0-100>,
   "summary": "<2-3 sentence overall impression>",
@@ -21,49 +19,50 @@ Guidelines:
 - Be specific and reference actual content from the resume where possible, not generic advice.
 - If a job description is provided, tailor missing_keywords and recommendations to it directly.
 - Keep each array to 3-6 items.
-- overall_score should reflect ATS-readiness AND how compelling the resume is to a human reader.
-- Never include commentary outside the JSON object.`;
+- overall_score should reflect ATS-readiness AND how compelling the resume is to a human reader.`;
+
+// Google AI Studio's free tier for this model: no credit card required.
+// See https://ai.google.dev/gemini-api/docs/rate-limits for current limits.
+const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 async function getAIFeedback(resumeText, jobDescription) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('ANTHROPIC_API_KEY is not set. Add it to your .env file.');
+    throw new Error('GEMINI_API_KEY is not set. Add it to your .env file (or Render environment variables).');
   }
 
   const userContent = jobDescription
     ? `TARGET JOB DESCRIPTION:\n${jobDescription}\n\nRESUME TEXT:\n${resumeText}`
     : `RESUME TEXT (no target job description provided — give general feedback):\n${resumeText}`;
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1500,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userContent }],
+      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: [{ parts: [{ text: userContent }] }],
+      generationConfig: {
+        responseMimeType: 'application/json',
+        maxOutputTokens: 1500,
+      },
     }),
   });
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Claude API error (${response.status}): ${errText}`);
+    throw new Error(`Gemini API error (${response.status}): ${errText}`);
   }
 
   const data = await response.json();
-  const textBlock = data.content?.find((c) => c.type === 'text');
-  if (!textBlock) {
-    throw new Error('No text response from Claude API');
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    throw new Error('No text response from Gemini API');
   }
 
-  const cleaned = textBlock.text.trim().replace(/^```json\s*|```$/g, '');
-
   try {
-    return JSON.parse(cleaned);
+    return JSON.parse(text);
   } catch (e) {
     throw new Error('Failed to parse AI response as JSON: ' + e.message);
   }
