@@ -84,12 +84,12 @@ function scoreRingSVG(score, label) {
   return `
     <div class="flex flex-col items-center">
       <svg width="100" height="100" viewBox="0 0 100 100" class="score-ring">
-        <circle cx="50" cy="50" r="${radius}" stroke="#e2e8f0" stroke-width="10" fill="none" />
+        <circle cx="50" cy="50" r="${radius}" stroke="#3f3f46" stroke-width="10" fill="none" />
         <circle cx="50" cy="50" r="${radius}" stroke="${color}" stroke-width="10" fill="none"
           stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round" />
       </svg>
       <div class="-mt-16 text-2xl font-bold" style="color:${color}">${score}</div>
-      <div class="mt-16 text-xs text-slate-500 uppercase tracking-wide">${label}</div>
+      <div class="mt-16 text-xs text-neutral-400 uppercase tracking-wide">${label}</div>
     </div>
   `;
 }
@@ -98,7 +98,7 @@ function listBlock(title, items, tagClass) {
   if (!items || !items.length) return '';
   return `
     <div>
-      <h4 class="text-sm font-semibold text-slate-700 mb-2">${title}</h4>
+      <h4 class="text-sm font-semibold text-neutral-200 mb-2">${title}</h4>
       <div class="flex flex-wrap gap-2">
         ${items.map((i) => `<span class="tag ${tagClass}">${escapeHtml(i)}</span>`).join('')}
       </div>
@@ -110,8 +110,8 @@ function bulletBlock(title, items) {
   if (!items || !items.length) return '';
   return `
     <div>
-      <h4 class="text-sm font-semibold text-slate-700 mb-2">${title}</h4>
-      <ul class="list-disc list-inside space-y-1 text-sm text-slate-600">
+      <h4 class="text-sm font-semibold text-neutral-200 mb-2">${title}</h4>
+      <ul class="list-disc list-inside space-y-1 text-sm text-neutral-300">
         ${items.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}
       </ul>
     </div>
@@ -128,38 +128,38 @@ function renderResults(data) {
   const { heuristics, aiFeedback, meta } = data;
 
   resultsSection.innerHTML = `
-    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+    <div class="bg-neutral-900 rounded-xl border border-neutral-800 p-6 shadow-lg">
       <div class="flex flex-col sm:flex-row items-center gap-8 justify-center">
         ${scoreRingSVG(aiFeedback.overall_score, 'AI Score')}
         ${scoreRingSVG(heuristics.ruleScore, 'ATS Score')}
       </div>
-      <p class="mt-6 text-slate-700 text-sm leading-relaxed border-t border-slate-100 pt-4">${escapeHtml(aiFeedback.summary)}</p>
-      <p class="mt-2 text-xs text-slate-400">${meta.fileName} · ${meta.wordCount} words</p>
+      <p class="mt-6 text-neutral-200 text-sm leading-relaxed border-t border-neutral-800 pt-4">${escapeHtml(aiFeedback.summary)}</p>
+      <p class="mt-2 text-xs text-neutral-500">${meta.fileName} · ${meta.wordCount} words</p>
     </div>
 
-    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
-      <h3 class="font-semibold text-slate-800">Rule-based checks</h3>
+    <div class="bg-neutral-900 rounded-xl border border-neutral-800 p-6 shadow-lg space-y-4">
+      <h3 class="font-semibold text-white">Rule-based checks</h3>
       <div class="grid sm:grid-cols-2 gap-4 text-sm">
         <div class="flex items-center gap-2">${heuristics.hasEmail ? '✅' : '⚠️'} Email address detected</div>
         <div class="flex items-center gap-2">${heuristics.hasPhone ? '✅' : '⚠️'} Phone number detected</div>
         <div class="flex items-center gap-2">${heuristics.bulletPointCount > 0 ? '✅' : '⚠️'} Bullet points used (${heuristics.bulletPointCount})</div>
         <div class="flex items-center gap-2">${heuristics.foundSections.length >= 3 ? '✅' : '⚠️'} Section headers found (${heuristics.foundSections.length})</div>
       </div>
-      ${heuristics.keywordMatch !== null ? `<p class="text-sm text-slate-600">Keyword match with job description: <strong>${heuristics.keywordMatch}%</strong></p>` : ''}
+      ${heuristics.keywordMatch !== null ? `<p class="text-sm text-neutral-300">Keyword match with job description: <strong>${heuristics.keywordMatch}%</strong></p>` : ''}
       ${bulletBlock('Detected issues', heuristics.issues)}
     </div>
 
-    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-5">
-      <h3 class="font-semibold text-slate-800">AI feedback</h3>
-      ${listBlock('Strengths', aiFeedback.strengths, 'bg-green-100 text-green-700')}
-      ${listBlock('Missing keywords', aiFeedback.missing_keywords, 'bg-amber-100 text-amber-700')}
+    <div class="bg-neutral-900 rounded-xl border border-neutral-800 p-6 shadow-lg space-y-5">
+      <h3 class="font-semibold text-white">AI feedback</h3>
+      ${listBlock('Strengths', aiFeedback.strengths, 'bg-green-950 text-green-400 border border-green-900')}
+      ${listBlock('Missing keywords', aiFeedback.missing_keywords, 'bg-amber-950 text-amber-400 border border-amber-900')}
       ${bulletBlock('Formatting issues', aiFeedback.formatting_issues)}
       <div>
-        <h4 class="text-sm font-semibold text-slate-700 mb-2">Section-by-section feedback</h4>
-        <div class="space-y-2 text-sm text-slate-600">
+        <h4 class="text-sm font-semibold text-neutral-200 mb-2">Section-by-section feedback</h4>
+        <div class="space-y-2 text-sm text-neutral-300">
           ${Object.entries(aiFeedback.section_feedback || {}).map(([section, feedback]) => `
-            <div class="border-l-2 border-indigo-200 pl-3">
-              <span class="font-medium capitalize">${section.replace(/_/g, ' ')}:</span> ${escapeHtml(feedback)}
+            <div class="border-l-2 border-indigo-700 pl-3">
+              <span class="font-medium capitalize text-white">${section.replace(/_/g, ' ')}:</span> ${escapeHtml(feedback)}
             </div>
           `).join('')}
         </div>
