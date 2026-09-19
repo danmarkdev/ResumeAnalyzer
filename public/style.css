@@ -18,9 +18,13 @@
    repaints form controls (buttons, inputs) with its own heuristic colors,
    ignoring the page's own CSS. Force our colors to win. */
 #submit-btn {
-  background-color: #4f46e5 !important;
-  color: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
 }
 #submit-btn:hover {
-  background-color: #6366f1 !important;
+  background-color: #e5e5e5 !important;
+}
+#submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
