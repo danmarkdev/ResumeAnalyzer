@@ -27,47 +27,48 @@
     </div>
   </header>
 
-  <main class="w-full flex-1 max-w-4xl mx-auto px-6 pt-8 pb-6">
+  <main class="w-full flex-1 max-w-4xl mx-auto px-6 pt-10 pb-10">
 
-    <!-- Upload form -->
-    <section id="upload-section" class="bg-neutral-900 rounded-xl border border-neutral-800 p-6 shadow-lg">
-      <form id="analyze-form" class="space-y-5">
+    <!-- Upload form (thick card like the PrintPortal reference: p-9, tall drop zone, bigger fields) -->
+    <section id="upload-section" class="bg-neutral-900 rounded-3xl border border-neutral-800 p-9 shadow-lg">
+      <form id="analyze-form" class="space-y-8">
         <div>
-          <label class="block text-sm font-medium mb-2 text-neutral-200">Resume file (PDF or DOCX, max 5MB)</label>
-          <div id="drop-zone" class="border-2 border-dashed border-neutral-700 rounded-lg p-8 text-center cursor-pointer hover:border-indigo-500 bg-neutral-950/50 transition-colors">
+          <label class="block text-sm font-medium mb-3 text-neutral-200">Resume file (PDF or DOCX, max 5MB)</label>
+          <div id="drop-zone" class="min-h-[180px] flex items-center justify-center border-2 border-dashed border-neutral-700 rounded-2xl px-8 py-12 text-center cursor-pointer hover:border-indigo-500 bg-neutral-950/50 transition-colors">
             <input type="file" id="resume-file" name="resume" accept=".pdf,.docx" class="hidden" required />
             <p id="drop-text" class="text-neutral-400">Click to choose a file, or drag it here</p>
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-2 text-neutral-200">Target job description <span class="text-neutral-500 font-normal">(optional, improves keyword matching)</span></label>
-          <textarea id="job-description" rows="5" placeholder="Paste the job posting here for tailored keyword and fit feedback..." class="w-full rounded-lg border border-neutral-700 bg-neutral-950 text-neutral-100 placeholder-neutral-500 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+          <label class="block text-sm font-medium mb-3 text-neutral-200">Target job description <span class="text-neutral-500 font-normal">(optional, improves keyword matching)</span></label>
+          <textarea id="job-description" rows="6" placeholder="Paste the job posting here for tailored keyword and fit feedback..." class="w-full rounded-xl border border-neutral-700 bg-neutral-950 text-neutral-100 placeholder-neutral-500 p-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
         </div>
 
-        <button type="submit" id="submit-btn" class="w-full bg-white hover:bg-neutral-200 text-black font-medium py-3 rounded-lg transition-colors">
+        <button type="submit" id="submit-btn" class="w-full bg-white hover:bg-neutral-200 text-black font-medium py-4 rounded-xl transition-colors">
           Analyze Resume
         </button>
       </form>
     </section>
 
     <!-- Loading state -->
-    <section id="loading-section" class="hidden mt-8 text-center py-12">
+    <section id="loading-section" class="hidden mt-6 text-center py-10">
       <div class="inline-block h-8 w-8 border-4 border-indigo-900 border-t-indigo-500 rounded-full animate-spin"></div>
-      <p class="mt-4 text-neutral-400 text-sm">Extracting text and generating feedback — this can take up to 20 seconds...</p>
+      <p class="mt-4 text-neutral-400 text-sm">Extracting text and generating feedback - this can take up to 20 seconds...</p>
     </section>
 
     <!-- Error state -->
     <section id="error-section" class="hidden mt-6 bg-red-950/50 border border-red-900 text-red-300 rounded-lg p-4 text-sm"></section>
 
     <!-- Results -->
-    <section id="results-section" class="hidden mt-8 space-y-6"></section>
+    <section id="results-section" class="hidden mt-6 space-y-6"></section>
 
   </main>
 
-  <footer class="border-t border-neutral-800">
-    <div class="max-w-4xl mx-auto px-6 py-3">
-      <p class="text-neutral-500 text-xs">© Danmark Rosalejos</p>
+  <!-- Footer: same layout as the PrintPortal footer - full width, 48px left padding, ~62px tall, text vertically centered -->
+  <footer class="w-full border-t border-neutral-800 bg-neutral-950">
+    <div class="w-full px-12 py-7 flex items-center justify-between">
+      <p class="text-xs text-neutral-500">© Danmark Rosalejos</p>
     </div>
   </footer>
 
