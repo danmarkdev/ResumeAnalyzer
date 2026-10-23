@@ -1,3 +1,6 @@
+// Backend lives on Render; the frontend can be hosted anywhere (e.g. AeonFree).
+const API_URL = 'https://resumeanalyzer-kutc.onrender.com/api/analyze';
+
 const form = document.getElementById('analyze-form');
 const fileInput = document.getElementById('resume-file');
 const dropZone = document.getElementById('drop-zone');
@@ -52,7 +55,7 @@ form.addEventListener('submit', async (e) => {
   formData.append('jobDescription', document.getElementById('job-description').value);
 
   try {
-    const res = await fetch('/api/analyze', { method: 'POST', body: formData });
+    const res = await fetch(API_URL, { method: 'POST', body: formData });
     const data = await res.json();
 
     if (!res.ok) {
