@@ -14,9 +14,7 @@
   font-weight: 500;
 }
 
-/* Explicit override: some browsers' auto-dark-mode-for-websites feature
-   repaints form controls (buttons, inputs) with its own heuristic colors,
-   ignoring the page's own CSS. Force our colors to win. */
+/* Resume Analyzer Dark Style */
 #submit-btn {
   background-color: #ffffff !important;
   color: #000000 !important;
