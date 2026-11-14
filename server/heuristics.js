@@ -1,7 +1,4 @@
-// Simple rule-based checks that mimic what a real ATS parser looks for.
-// Kept separate from the AI call so the score isn't purely "the model's opinion" -
-// part of it is deterministic and explainable.
-
+// ATS
 const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
 const PHONE_REGEX = /(\+?\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}/;
 const SECTION_HEADERS = ['experience', 'education', 'skills', 'summary', 'objective', 'projects', 'certifications'];
@@ -17,7 +14,7 @@ function tokenize(text) {
     .toLowerCase()
     .replace(/[^a-z0-9+.# ]/g, ' ')
     .split(/\s+/)
-    .map((w) => w.replace(/^[.]+|[.]+$/g, '')) // strip stray leading/trailing periods, keep node.js/c#/asp.net intact
+    .map((w) => w.replace(/^[.]+|[.]+$/g, '')) 
     .filter((w) => w.length > 2 && !STOPWORDS.has(w));
 }
 
@@ -68,7 +65,7 @@ function runHeuristics(resumeText, jobDescription) {
       : null;
   }
 
-  // Deterministic component score (0-100), separate from the AI's holistic score
+  // AI Deterministic component score
   let ruleScore = 100;
   ruleScore -= issues.length * 10;
   if (keywordMatch !== null) {
