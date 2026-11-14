@@ -1,4 +1,4 @@
-// Backend lives on Render; the frontend can be hosted anywhere (e.g. AeonFree).
+// Backend Host Render/AeonFree
 const API_URL = 'https://resumeanalyzer-kutc.onrender.com/api/analyze';
 
 const form = document.getElementById('analyze-form');
