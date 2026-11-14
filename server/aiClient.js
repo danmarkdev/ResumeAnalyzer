@@ -21,8 +21,7 @@ Guidelines:
 - Keep each array to 3-6 items.
 - overall_score should reflect ATS-readiness AND how compelling the resume is to a human reader.`;
 
-// Google AI Studio's free tier for this model: no credit card required.
-// See https://ai.google.dev/gemini-api/docs/rate-limits for current limits.
+// Google AI Studio & Gemini
 const GEMINI_MODEL = 'gemini-3.5-flash';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
@@ -38,10 +37,11 @@ async function callGemini(apiKey, userContent) {
       contents: [{ parts: [{ text: userContent }] }],
       generationConfig: {
         responseMimeType: 'application/json',
-        // Thinking tokens share this budget with the visible answer, so keep it generous.
+        
+        // Tokens
         maxOutputTokens: 8192,
-        // Resume feedback doesn't need deep reasoning. If the API rejects this field
-        // with a 400 error, replace it with: thinkingConfig: { thinkingBudget: 0 }
+        
+        // Resume Feedback
         thinkingConfig: { thinkingLevel: 'minimal' },
       },
     }),
@@ -57,7 +57,7 @@ async function callGemini(apiKey, userContent) {
   return response.json();
 }
 
-// Strips markdown fences and anything outside the outermost { ... } before parsing.
+// Strips markdown 
 function safeParse(text) {
   const cleaned = text.replace(/```json|```/g, '').trim();
   const start = cleaned.indexOf('{');
@@ -80,16 +80,14 @@ async function getAIFeedback(resumeText, jobDescription) {
 
   let lastError;
 
-  // Retry on transient failures: 503 "overloaded", 429 rate limits, and
-  // malformed/truncated JSON from the model (asking again usually fixes it).
+  // malformed Json
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
       const data = await callGemini(apiKey, userContent);
       const candidate = data.candidates?.[0];
       const text = candidate?.content?.parts?.map((p) => p.text || '').join('');
 
-      // Check these logs in Render if errors ever come back.
-      // finishReason "MAX_TOKENS" means the reply was cut off.
+      // Logs in Render & Max Tokens
       console.log(
         `Gemini finishReason: ${candidate?.finishReason} | usage: ${JSON.stringify(data.usageMetadata)}`
       );
