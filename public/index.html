@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -29,7 +29,6 @@
 
   <main class="w-full flex-1 max-w-4xl mx-auto px-6 pt-10 pb-10">
 
-    <!-- Upload form -->
     <section id="upload-section" class="bg-neutral-900 rounded-3xl border border-neutral-800 p-9 shadow-lg">
       <form id="analyze-form" class="space-y-8">
         <div>
@@ -51,21 +50,17 @@
       </form>
     </section>
 
-    <!-- Loading state -->
     <section id="loading-section" class="hidden mt-6 text-center py-10">
       <div class="inline-block h-8 w-8 border-4 border-indigo-900 border-t-indigo-500 rounded-full animate-spin"></div>
       <p class="mt-4 text-neutral-400 text-sm">Extracting text and generating feedback — this can take up to 20 seconds...</p>
     </section>
 
-    <!-- Error state -->
     <section id="error-section" class="hidden mt-6 bg-red-950/50 border border-red-900 text-red-300 rounded-lg p-4 text-sm"></section>
 
-    <!-- Results -->
     <section id="results-section" class="hidden mt-6 space-y-6"></section>
 
   </main>
 
-  <!-- Footer -->
   <footer class="w-full border-t border-neutral-800 bg-neutral-950">
     <div class="w-full px-12 py-7 flex items-center justify-between">
       <p class="text-xs text-neutral-500">© Danmark Rosalejos</p>
