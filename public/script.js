@@ -1,4 +1,3 @@
-// Backend Host Render/AeonFree
 const API_URL = 'https://resumeanalyzer-kutc.onrender.com/api/analyze';
 
 const form = document.getElementById('analyze-form');
